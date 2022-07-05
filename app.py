@@ -1,6 +1,5 @@
 from email.mime import message
 from flask import Flask, make_response, abort, jsonify, render_template, request, redirect
-from sqlalchemy import true
 from models import db,ContactModel
 app = Flask(__name__)
 
@@ -136,4 +135,4 @@ def delete(id):
 		#return redirect('/')#depende habilitar
 	return render_template('delete.html')
 
-app.run(host='localhost', port=5000)
+app.run(host='0.0.0.0', port=5001)
