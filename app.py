@@ -1,6 +1,5 @@
 from email.mime import message
 from flask import Flask, make_response, abort, jsonify, render_template, request, redirect
-from sqlalchemy import true
 from models import db,ContactModel
 app = Flask(__name__)
 
@@ -59,59 +58,32 @@ def RetrieveList():
 # @app.route('/edit-form', methods=['GET', 'POST'])
 @app.route('/edit', methods=['GET', 'POST'])
 def update():
-	id = request.form['id']
-	contact = ContactModel.query.filter_by(id=id).first()
-	print ("mostrando contacto")
-	print (contact)
-
 	if request.method == 'POST':
+		id = request.form['id']
+		contact = ContactModel.query.filter_by(id=id).first()
+		print ("mostrando contacto")
+		print (contact)
 		#db.session.delete(contact)
 		db.session.commit()
 		if contact:
-			# capitan = request.form.getlist('capitan')
-			# #pasatiempos = ','.join(map(str, pasatiempo))
-			# capitan = ",".join(map(str, capitan))
-			# pais = request.form['pais']
-			# idioma = request.form['idioma']
-			# continente = request.form['continente']
-			# grupo = request.form['grupo']
-			# entrenador = request.form['entrenador']
-			# capitan = capitan
-			# puntaje = request.form['puntaje']
-
-			#capitan = request.form.getlist('capitan')
-			#pasatiempos = ','.join(map(str, pasatiempo))
-			#capitan = ",".join(map(str, capitan))
-			pais = request.form['pais']
-			idioma = request.form['idioma']
-			continente = request.form['continente']
-			grupo = request.form['grupo']
-			entrenador = request.form['entrenador']
-			capitan = request.form['capitan']
-			puntaje = request.form['puntaje']
-
-
-			print ("Contactos modelo")
 			contact = ContactModel(
-				pais = pais,
-				idioma = idioma,
-				continente = continente,
-				grupo = grupo,
-				entrenador = entrenador,
-				capitan = capitan,
-				puntaje = puntaje
+				pais = request.form['pais'],
+				idioma = request.form['idioma'],
+				continente = request.form['continente'],
+				grupo = request.form['grupo'],
+				entrenador = request.form['entrenador'],
+				capitan = request.form['capitan'],
+				puntaje = request.form['puntaje']
 			)
+			print("Editing...")
 			db.session.add(contact)
 			db.session.commit()
 			#return redirect('/')
 			return f"El equipo con id = {id}COMIDA"
 			#print ("return something")
 		return f"El equipo con id = {id} No existe"
-		
 
 	return render_template('update.html', contact = contact)
-
-
 
 #Mostrando datos del update:
 @app.route('/<int:id>/edit', methods = ['GET'])
@@ -136,4 +108,4 @@ def delete(id):
 		#return redirect('/')#depende habilitar
 	return render_template('delete.html')
 
-app.run(host='localhost', port=5000)
+app.run(host='0.0.0.0', port=5001, debug=True)
