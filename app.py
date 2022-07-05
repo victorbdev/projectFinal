@@ -11,26 +11,21 @@ db.init_app(app)
 def create_table():
 	db.create_all()
 
-#creación:
+#Creación de equipo:
 @app.route('/create', methods = ['GET'])
 def create():
 	return render_template('create.html')
 
 @app.route('/create-form', methods = ['GET','POST'])
 def createForm():
-	#capitan = request.form.getlist('capitan')
-	#capitan = ','.join(map(str, capitan))
 	pais = request.form['pais']
 	idioma = request.form['idioma']
 	continente = request.form['continente']
 	grupo = request.form['grupo']
 	entrenador = request.form['entrenador']
 	capitan = request.form['capitan']
-	puntaje = request.form['puntaje'] #quitar el request
+	puntaje = request.form['puntaje'] 
 
-
-	#print ("Contactos modelo")
-#Pasatiempo = capitan
 	contacts = ContactModel(
 		pais = pais,
 		idioma = idioma,
@@ -43,8 +38,6 @@ def createForm():
 	db.session.add(contacts)
 	db.session.commit()
 	return redirect('/')
-	#print ("return something")
-	#return make_response(jsonify({"message": "bien"}), 200)
 
 
 @app.route('/' , methods = ['GET'])
@@ -55,7 +48,6 @@ def RetrieveList():
 
 
 #Actualizando datos:
-# @app.route('/edit-form', methods=['GET', 'POST'])
 @app.route('/edit', methods=['GET', 'POST'])
 def update():
 	if request.method == 'POST':
@@ -63,7 +55,7 @@ def update():
 		contact = ContactModel.query.filter_by(id=id).first()
 		print ("mostrando contacto")
 		print (contact)
-		#db.session.delete(contact)
+		db.session.delete(contact) #Elimina el equipo y muestra el modificado 
 		db.session.commit()
 		if contact:
 			contact = ContactModel(
@@ -78,14 +70,12 @@ def update():
 			print("Editing...")
 			db.session.add(contact)
 			db.session.commit()
-			#return redirect('/')
-			return f"El equipo con id = {id}COMIDA"
-			#print ("return something")
+			return redirect('/')
 		return f"El equipo con id = {id} No existe"
 
 	return render_template('update.html', contact = contact)
 
-#Mostrando datos del update:
+#Mostramos los datos del update(edit):
 @app.route('/<int:id>/edit', methods = ['GET'])
 # @app.route('/edit/<int:id>', methods = ['GET'])
 def returnUpdate(id):
@@ -94,7 +84,7 @@ def returnUpdate(id):
 
 
 
-#Eliminar el contact:
+#Eliminamos un equipo:
 @app.route('/<int:id>/delete', methods=['GET', 'POST'])
 
 def delete(id):
@@ -105,7 +95,9 @@ def delete(id):
 			db.session.commit()
 			return redirect('/')
 		abort(404)
-		#return redirect('/')#depende habilitar
+		#return redirect('/')
 	return render_template('delete.html')
 
+# Empleamos debug=true para que se actualice 
+# automáticamente los cambios en el local:
 app.run(host='0.0.0.0', port=5001, debug=True)
